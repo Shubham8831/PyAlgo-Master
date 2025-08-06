@@ -1,6 +1,5 @@
 from autogen_agentchat.agents import AssistantAgent, CodeExecutorAgent
 from autogen_agentchat.messages import TextMessage
-from autogen_agentchat.base import TaskResult
 from autogen_agentchat.conditions import TextMentionTermination
 from autogen_agentchat.teams import RoundRobinGroupChat
 from autogen_ext.code_executors.local import LocalCommandLineCodeExecutor
@@ -34,21 +33,21 @@ async def main():
         description="An agent that solves DSA problems",
         model_client=model_client,
         system_message="""
-You are an expert DSA problem‐solver agent.  
 
--- On the **first** time you get a task from the user, you MUST:
-1) Outline your plan in 20 words.
-2) Provide the Python code in a single ```python``` code‐block.
-3) Do **not** explain, do **not** say “STOP.”
+you are a problem solver agent that is an expert in solving DSA problems.
+You will be working with code executor agent to execute code.
+You will be given a task and you should.
+At beginning of your response you have to specify your plan to solve the task in 70 words.
+Then you should give code in code block (python).
+You should write code in a one code block at a time and then pass it to code executor agent to execute it.
+Once the code is executed by code executor agent and of the same has been done successfully, you have the results.
+you should explain the code execution result in 50 words.
 
--- When you receive a message **from** the CodeExecutorAgent containing the code’s execution output:
-4) Explain that output in 20 words (plain text).
-5) Finally, output exactly `STOP` on its own line.
-
+In the end once the code is executed successfully by code executor agent, you have to say "ok" to stop the conversation.
 """
     )
 
-    local_exec = LocalCommandLineCodeExecutor(work_dir="temp", timeout=120)
+    local_exec = LocalCommandLineCodeExecutor(work_dir="/tmp", timeout=120)
     code_executor_agent = CodeExecutorAgent(
         name="code_executor_agent",
         code_executor=local_exec
@@ -72,19 +71,10 @@ You are an expert DSA problem‐solver agent.
     try:
         #await docker.start()
         async for message in team.run_stream(task=task):
-            # print("=" * 40)
-            # # message.content or message.text depending on your API
-            # print(f"{message.source}: {message.content}")
-            # print("=" * 40)
-
-            # WITH THIS WE ARE GETTING AN ERROR AT END AS - Error: 'TaskResult' object has no attribute 'source'
-            # this is because all the other messages other then last one are textmessages and at the end after everything is done the message type is task result
-
-            if isinstance(message, TextMessage):
-                print(f"{message.source}: {message.content}")
-            elif isinstance(message, TaskResult):
-                print(f"Stop Reason : {message.stop_reason}")
-
+            print("=" * 40)
+            # message.content or message.text depending on your API
+            print(f"{message.source}: {message.content}")
+            print("=" * 40)
     except Exception as e:
         print(f"Error: {e}")
 
