@@ -6,3 +6,4 @@ dotenv
 pydantic
 tiktoken
 autogen-ext[docker]
+streamlit

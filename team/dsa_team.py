@@ -5,7 +5,7 @@ from autogen_agentchat.conditions import TextMentionTermination
 from config.constants import TEXT_MENTION, MAX_TURNS
 
 def create_dsa_team():
-    code_executor_agent = get_code_executor_agent()
+    code_executor_agent, local_exec = get_code_executor_agent()
     problem_solver_agent = get_problem_solver_agent()
 
     termination = TextMentionTermination(TEXT_MENTION)
@@ -16,4 +16,4 @@ def create_dsa_team():
             max_turns=MAX_TURNS
         )
     
-    return team
+    return team, local_exec
