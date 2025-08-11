@@ -19,7 +19,7 @@ def get_problem_solver_agent():
     3) Do **not** explain, do **not** say “STOP.”
 
     -- When you receive a message **from** the CodeExecutorAgent containing the code’s execution output:
-    4) Explain that output in 20 words (plain text).
+    4) Print and Explain that output in 50 words (plain text).
     5) Finally, output exactly `STOP` on its own line.
 
     """)
